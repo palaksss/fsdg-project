@@ -98,7 +98,7 @@ export default function Navbar() {
 
             {/* Mobile navigation */}
             <div
-                className={`fixed inset-0 flex flex-col items-center justify-center gap-6 bg-white/80 text-lg font-medium backdrop-blur-md transition duration-300 md:hidden ${
+                className={`fixed inset-0 flex flex-col items-center justify-center gap-6 bg-white/80 text-lg font-medium backdrop-blur-md transition-transform duration-300 md:hidden ${
                     openMobileMenu
                         ? "translate-x-0"
                         : "-translate-x-full"
@@ -130,8 +130,25 @@ export default function Navbar() {
                     )
                 )}
 
-                <button type="button">
+                <button
+                    type="button"
+                    onClick={() => {
+                        setOpenMobileMenu(false);
+                        navigate("/login");
+                    }}
+                >
                     Sign in
+                </button>
+
+                <button
+                    type="button"
+                    onClick={() => {
+                        setOpenMobileMenu(false);
+                        navigate("/register");
+                    }}
+                    className="rounded-md bg-indigo-600 px-5 py-2.5 text-white"
+                >
+                    Get started
                 </button>
 
                 <button
@@ -148,6 +165,7 @@ export default function Navbar() {
             <div className="flex items-center gap-4">
                 <button
                     type="button"
+                    onClick={() => navigate("/login")}
                     className="hidden rounded-md border border-indigo-600 px-4 py-2 transition hover:bg-slate-100 md:block"
                 >
                     Sign in
@@ -155,7 +173,7 @@ export default function Navbar() {
 
                 <button
                     type="button"
-                    onClick={() => navigate("/dashboard")}
+                    onClick={() => navigate("/register")}
                     className="hidden rounded-md bg-indigo-600 px-4 py-2 text-white transition hover:bg-indigo-700 md:block"
                 >
                     Get started
