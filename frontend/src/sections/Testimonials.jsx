@@ -5,23 +5,31 @@ import SectionTitle from "../components/SectionTitle";
 
 export default function Testimonials() {
     return (
-        <>
-            <SectionTitle text1="Testimonials" text2="Our Social Proof" text3="A visual collection of our most recent works - each piece crafted with intention, emotion and style." />
+        <section className="py-24 overflow-hidden">
+            <SectionTitle
+                text1="User Experiences"
+                text2="How AlignCV Can Help Job Seekers"
+                text3="Illustrative experiences showing how AI-powered analysis can simplify resume optimization and job-description matching."
+            />
 
-            <Marquee className="max-w-5xl mx-auto mt-11" gradient={true} speed={25}>
-                <div className="flex items-center justify-center py-5">
-                    {[...testimonialsData, ...testimonialsData].map((testimonial, index) => (
-                        <TestimonialCard key={index} testimonial={testimonial} />
-                    ))}
+            <Marquee
+                className="max-w-6xl mx-auto mt-12"
+                gradient={true}
+                gradientWidth={80}
+                speed={18}
+                pauseOnHover={true}
+            >
+                <div className="flex items-stretch py-5">
+                    {[...testimonialsData, ...testimonialsData].map(
+                        (testimonial, index) => (
+                            <TestimonialCard
+                                key={`${testimonial.name}-${index}`}
+                                testimonial={testimonial}
+                            />
+                        )
+                    )}
                 </div>
             </Marquee>
-            <Marquee className="max-w-5xl mx-auto" gradient={true} speed={25} direction="right">
-                <div className="flex items-center justify-center py-5">
-                    {[...testimonialsData, ...testimonialsData].map((testimonial, index) => (
-                        <TestimonialCard key={index} testimonial={testimonial} />
-                    ))}
-                </div>
-            </Marquee>
-        </>
+        </section>
     );
 }
