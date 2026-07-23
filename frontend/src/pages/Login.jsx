@@ -10,6 +10,7 @@ export default function Login() {
         email: "",
         password: "",
     });
+    const { login } = useAuth();
 
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
@@ -47,7 +48,7 @@ export default function Login() {
 
         // Temporary frontend behaviour.
         // Replace this with the backend login request later.
-        const { login } = useAuth();
+        
     };
 
     return (
