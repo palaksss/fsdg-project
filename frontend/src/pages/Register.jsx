@@ -1,10 +1,11 @@
 import { Eye, EyeOff, UserPlus } from "lucide-react";
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
 
 export default function Register() {
     const navigate = useNavigate();
-
+    const { register } = useAuth();
     const [formData, setFormData] = useState({
         name: "",
         email: "",
@@ -54,6 +55,11 @@ export default function Register() {
 
         // Temporary frontend behaviour.
         // Replace this with the backend registration request later.
+        register({
+            name: formData.name,
+            email: formData.email,
+        });
+
         navigate("/dashboard");
     };
 

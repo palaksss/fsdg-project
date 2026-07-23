@@ -1,5 +1,6 @@
 import { Eye, EyeOff, LogIn } from "lucide-react";
 import { useState } from "react";
+import { useAuth } from "../context/AuthContext";
 import { Link, useNavigate } from "react-router-dom";
 
 export default function Login() {
@@ -37,11 +38,16 @@ export default function Login() {
             return;
         }
 
-        console.log("Login data:", formData);
+        login({
+            name: "Palak",
+            email: formData.email,
+        });
+
+        navigate("/dashboard");
 
         // Temporary frontend behaviour.
         // Replace this with the backend login request later.
-        navigate("/dashboard");
+        const { login } = useAuth();
     };
 
     return (
