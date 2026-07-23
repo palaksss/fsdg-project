@@ -17,12 +17,18 @@ export default function Navbar() {
 
     return (
         <nav className={`flex items-center justify-between fixed z-50 top-0 w-full px-6 md:px-16 lg:px-24 xl:px-32 py-4 border-b border-slate-200 bg-white/40 ${openMobileMenu ? 'bg-white/80' : 'backdrop-blur'}`}>
-            <a href="https://prebuiltui.com?utm_source=saasly">
-                <img className="h-9 md:h-9.5 w-auto shrink-0" src="/assets/logo.svg" alt="Logo" width={140} height={40} fetchPriority="high" />
-            </a>
+            <Link to="/">
+                <span className="text-2xl font-bold bg-gradient-to-r from-indigo-600 to-pink-500 bg-clip-text text-transparent">
+                    AlignCV
+                </span>
+            </Link>
             <div className="hidden items-center md:gap-8 lg:gap-9 font-medium md:flex lg:pl-20">
                 {navLinks.map((link) => (
-                    <NavLink key={link.name} href={link.href} className="hover:text-indigo-600">
+                    <NavLink
+                        key={link.name}
+                        to={link.href}
+                        className="hover:text-indigo-600"
+                    >
                         {link.name}
                     </NavLink>
                 ))}
@@ -30,8 +36,11 @@ export default function Navbar() {
             {/* Mobile menu */}
             <div className={`fixed inset-0 flex flex-col items-center justify-center gap-6 text-lg font-medium bg-white/40 backdrop-blur-md md:hidden transition duration-300 ${openMobileMenu ? "translate-x-0" : "-translate-x-full"}`}>
                 {navLinks.map((link) => (
-                    <NavLink key={link.name} href={link.href}>
-                        {link.name}
+                    <NavLink
+                        key={link.name}
+                        to={link.href}
+                    >
+                    {link.name}
                     </NavLink>
                 ))}
                 <button>

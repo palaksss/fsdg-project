@@ -5,14 +5,14 @@ export const navLinks = [
     },
     {
         name: "Features",
-        href: "/features",
+        href: "/#features",
     },
     {
-        name: "Pricing",
-        href: "/pricing",
+        name: "Dashboard",
+        href: "/dashboard",
     },
     {
-        name: "Docs",
-        href: "/docs",
+        name: "History",
+        href: "/history",
     }
 ];
