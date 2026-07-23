@@ -14,5 +14,5 @@ export const navLinks = [
     {
         name: "History",
         href: "/history",
-    }
+    },
 ];
