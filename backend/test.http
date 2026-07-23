@@ -1,0 +1,9 @@
+POST http://localhost:5000/api/upload
+Content-Type: multipart/form-data; boundary=MyBoundary
+
+--MyBoundary
+Content-Disposition: form-data; name="resume"; filename="DheerajResume.docx.pdf"
+Content-Type: application/pdf
+
+< ./sample/DheerajResume.docx.pdf
+--MyBoundary--
