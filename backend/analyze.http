@@ -1,0 +1,15 @@
+POST http://localhost:5000/api/analyze
+Content-Type: application/json
+
+{
+  "resume": {
+    "name": "Shreyashi",
+    "skills": [
+      "React",
+      "NodeJS",
+      "Python",
+      "Docker"
+    ]
+  },
+  "jobDescription": "We are looking for React, NodeJS, Docker, MongoDB, AWS and Git developers."
+}
