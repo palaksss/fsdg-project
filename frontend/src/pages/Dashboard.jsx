@@ -17,6 +17,7 @@ export default function Dashboard() {
     const [isAnalyzing, setIsAnalyzing] = useState(false);
     const [showResults, setShowResults] = useState(false);
     const [error, setError] = useState("");
+    const [analysis, setAnalysis] = useState(null);
 
     const handleFileChange = (event) => {
         const selectedFile = event.target.files?.[0];
@@ -44,52 +45,64 @@ export default function Dashboard() {
         setShowResults(false);
     };
 
-    const handleAnalyze = () => {
-        if (!resume) {
-            setError("Please upload your resume.");
-            return;
-        }
+    const handleAnalyze = async () => {
+    if (!resume) {
+        setError("Please upload your resume.");
+        return;
+    }
 
-        if (!jobDescription.trim()) {
-            setError("Please paste the job description.");
-            return;
-        }
+    if (!jobDescription.trim()) {
+        setError("Please paste the job description.");
+        return;
+    }
 
+    try {
         setError("");
         setIsAnalyzing(true);
         setShowResults(false);
 
-        // Temporary mock analysis.
-        // Replace this with your backend API request later.
-        setTimeout(() => {
-            setIsAnalyzing(false);
-            setShowResults(true);
-        }, 1800);
+        const formData = new FormData();
+        formData.append("resume", resume);
+
+        const uploadResponse = await fetch(
+            "http://localhost:5000/api/upload",
+            {
+                method: "POST",
+                body: formData
+            }
+        );
+
+        const uploadData = await uploadResponse.json();
+
+        const analyzeResponse = await fetch(
+            "http://localhost:5000/api/analyze",
+            {
+                method: "POST",
+                headers: {
+                    "Content-Type": "application/json"
+                },
+                body: JSON.stringify({
+                    resume: uploadData.resume,
+                    jobDescription
+                })
+            }
+        );
+
+        const result = await analyzeResponse.json();
+
+        setAnalysis(result);
+
+        setShowResults(true);
+    }
+    catch (err) {
+        console.log(err);
+
+        setError("Backend connection failed.");
+    }
+    finally {
+        setIsAnalyzing(false);
+    }
     };
-
-    const suggestions = [
-        "Add measurable results to your project and internship descriptions.",
-        "Mention REST APIs and backend integration where relevant.",
-        "Include Docker and cloud deployment keywords if you have experience.",
-        "Move your strongest technical skills closer to the top of the resume.",
-    ];
-
-    const matchedSkills = [
-        "React",
-        "JavaScript",
-        "Node.js",
-        "MongoDB",
-        "Python",
-        "Machine Learning",
-    ];
-
-    const missingSkills = [
-        "Docker",
-        "AWS",
-        "Redis",
-        "CI/CD",
-    ];
-
     return (
         <>
             <Navbar />
@@ -277,29 +290,41 @@ export default function Dashboard() {
                             <div className="grid gap-5 sm:grid-cols-2 xl:grid-cols-4">
                                 <StatCard
                                     label="ATS Score"
-                                    value="87%"
+                                    value={`${analysis?.atsScore ?? 0}%`}
                                     description="Strong overall match"
                                     icon={<Target size={22} />}
                                 />
 
                                 <StatCard
                                     label="Matched Skills"
-                                    value="12"
+                                    value={analysis?.matchedSkills?.length ?? 0}
                                     description="Relevant skills found"
                                     icon={<CheckCircle2 size={22} />}
                                 />
 
                                 <StatCard
                                     label="Missing Skills"
-                                    value="4"
+                                    value={analysis?.missingSkills?.length ?? 0}
                                     description="Keywords to consider"
                                     icon={<Search size={22} />}
                                 />
 
                                 <StatCard
                                     label="Match Level"
-                                    value="High"
-                                    description="Good fit for this role"
+                                    value={
+                                        analysis?.atsScore >= 80
+                                            ? "High"
+                                            : analysis?.atsScore >= 50
+                                            ? "Medium"
+                                            : "Low"
+                                        }
+                                    description={
+                                        analysis?.atsScore >= 80
+                                            ? "Strong overall match"
+                                            : analysis?.atsScore >= 50
+                                            ? "Moderate match"
+                                            : "Needs improvement"
+                                        }
                                     icon={<Sparkles size={22} />}
                                 />
                             </div>
@@ -317,7 +342,7 @@ export default function Dashboard() {
                                     </p>
 
                                     <div className="mt-5 flex flex-wrap gap-2">
-                                        {matchedSkills.map((skill) => (
+                                        {analysis?.matchedSkills?.map((skill) => (
                                             <span
                                                 key={skill}
                                                 className="rounded-full bg-emerald-50 px-3 py-1.5 text-sm font-medium text-emerald-700"
@@ -339,7 +364,7 @@ export default function Dashboard() {
                                     </p>
 
                                     <div className="mt-5 flex flex-wrap gap-2">
-                                        {missingSkills.map((skill) => (
+                                        {analysis?.missingSkills?.map((skill) => (
                                             <span
                                                 key={skill}
                                                 className="rounded-full bg-amber-50 px-3 py-1.5 text-sm font-medium text-amber-700"
@@ -371,7 +396,7 @@ export default function Dashboard() {
                                 </div>
 
                                 <div className="mt-6 grid gap-3 md:grid-cols-2">
-                                    {suggestions.map((suggestion) => (
+                                    {analysis?.suggestions?.map((suggestion) => (
                                         <div
                                             key={suggestion}
                                             className="flex gap-3 rounded-xl bg-slate-50 p-4"
