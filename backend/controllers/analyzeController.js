@@ -2,7 +2,7 @@ const fs = require("fs");
 const pdf = require("pdf-parse");
 
 const parseResume = require("../utils/resumeParser");
-const matchResume = require("../utils/jobMatcher");
+const analyzeResumeWithGemini = require("../services/gemini");
 
 const uploadResume = async (req, res) => {
 
@@ -34,16 +34,30 @@ const uploadResume = async (req, res) => {
 
 };
 
-const analyzeResume = (req, res) => {
+const analyzeResume = async (req, res) => {
 
-    const { resume, jobDescription } = req.body;
+    try {
 
-    const result = matchResume(
-        resume,
-        jobDescription
-    );
+        const { resume, jobDescription } = req.body;
 
-    res.json(result);
+        const result = await analyzeResumeWithGemini(
+            resume,
+            jobDescription
+        );
+
+        res.json(result);
+
+    }
+    catch (err) {
+
+        console.log(err);
+
+        res.status(500).json({
+            success: false,
+            message: "Gemini analysis failed"
+        });
+
+    }
 
 };
 

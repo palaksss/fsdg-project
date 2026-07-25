@@ -1,4 +1,5 @@
 require("dotenv").config();
+
 const express = require("express");
 const multer = require("multer");
 const fs = require("fs");
@@ -15,7 +16,6 @@ app.use(cors());
 app.use(express.json());
 
 const storage = multer.diskStorage({
-
     destination(req, file, cb) {
 
         if (!fs.existsSync("uploads")) {
@@ -26,14 +26,11 @@ const storage = multer.diskStorage({
     },
 
     filename(req, file, cb) {
-
         cb(
             null,
             Date.now() + "-" + file.originalname
         );
-
     }
-
 });
 
 const upload = multer({
@@ -41,9 +38,7 @@ const upload = multer({
 });
 
 app.get("/", (req, res) => {
-
     res.send("Backend is running!");
-
 });
 
 app.post(
@@ -58,7 +53,5 @@ app.post(
 );
 
 app.listen(5000, () => {
-
     console.log("Server running on port 5000");
-
 });
