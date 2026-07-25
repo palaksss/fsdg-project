@@ -2,6 +2,14 @@ import { ChevronRightIcon, SparklesIcon } from "lucide-react";
 import { useNavigate } from "react-router-dom";
 
 export default function HeroSection() {
+    const handleExploreFeatures = () => {
+        document
+            .getElementById("features")
+            ?.scrollIntoView({
+                behavior: "smooth",
+                block: "start",
+            });
+    };
     const navigate = useNavigate();
     return (
         <div className="flex flex-col items-center justify-center text-center bg-[url('/assets/hero-section-dot-image.png')] bg-cover bg-no-repeat">
@@ -33,7 +41,11 @@ export default function HeroSection() {
                     Analyze Resume
                 </button>
 
-                <button className="flex items-center justify-center gap-2 border border-indigo-400 px-5 py-3 rounded-md text-indigo-600">
+                <button
+                    type="button"
+                    onClick={handleExploreFeatures}
+                    className="rounded-lg border border-slate-300 px-6 py-3 font-medium text-slate-700 transition hover:border-indigo-600 hover:text-indigo-600"
+                >
                     Explore Features
                 </button>
             </div>

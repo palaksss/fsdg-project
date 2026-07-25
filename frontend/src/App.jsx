@@ -5,6 +5,7 @@ import Register from "./pages/Register";
 import Login from "./pages/Login";
 import History from "./pages/History";
 import ProtectedRoute from "./components/ProtectedRoute";
+import AnalysisDetails from "./pages/AnalysisDetails";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -30,6 +31,14 @@ export default function App() {
                     element={
                         <ProtectedRoute>
                             <History />
+                        </ProtectedRoute>
+                    }
+                />
+                <Route
+                    path="/analysis/:id"
+                    element={
+                        <ProtectedRoute>
+                            <AnalysisDetails />
                         </ProtectedRoute>
                     }
                 />

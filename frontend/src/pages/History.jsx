@@ -5,9 +5,11 @@ import {
     Target,
     Trash2,
 } from "lucide-react";
+import { useState } from "react";
+import { useNavigate } from "react-router-dom";
 import Navbar from "../components/Navbar";
 
-const historyData = [
+const initialHistoryData = [
     {
         id: 1,
         resumeName: "Palak_Resume.pdf",
@@ -35,6 +37,35 @@ const historyData = [
 ];
 
 export default function History() {
+    const navigate = useNavigate();
+
+    const [historyData, setHistoryData] = useState(initialHistoryData);
+
+    const handleView = (id) => {
+        navigate(`/analysis/${id}`);
+    };
+
+    const handleDelete = (id) => {
+        const shouldDelete = window.confirm(
+            "Are you sure you want to delete this analysis?"
+        );
+
+        if (!shouldDelete) return;
+
+        setHistoryData((previousHistory) =>
+            previousHistory.filter((item) => item.id !== id)
+        );
+    };
+
+    const highestScore =
+        historyData.length > 0
+            ? Math.max(...historyData.map((item) => item.atsScore))
+            : 0;
+
+    const lastAnalysis =
+        historyData.length > 0
+            ? historyData[0].date
+            : "No data";
     return (
         <>
             <Navbar />
@@ -62,21 +93,22 @@ export default function History() {
                     <section className="grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
                         <SummaryCard
                             label="Total Analyses"
-                            value="3"
+                            value={historyData.length}
                             icon={<FileText size={22} />}
                         />
 
                         <SummaryCard
                             label="Highest ATS Score"
-                            value="91%"
+                            value={`${highestScore}%`}
                             icon={<Target size={22} />}
                         />
 
                         <SummaryCard
                             label="Last Analysis"
-                            value="23 Jul"
+                            value={lastAnalysis}
                             icon={<CalendarDays size={22} />}
                         />
+                        
                     </section>
 
                     {/* History table */}
@@ -106,7 +138,34 @@ export default function History() {
                                 />
                             </div>
                         </div>
+                        {historyData.length === 0 ? (
+                            <div className="flex flex-col items-center justify-center px-6 py-16 text-center">
+                                <div className="flex size-14 items-center justify-center rounded-full bg-indigo-50 text-indigo-600">
+                                    <FileText size={26} />
+                                </div>
 
+                                <h3 className="mt-4 text-lg font-semibold text-slate-900">
+                                    No analyses found
+                                </h3>
+
+                                <p className="mt-2 text-sm text-slate-500">
+                                    Your resume analyses will appear here.
+                                </p>
+
+                                <button
+                                    type="button"
+                                    onClick={() => navigate("/dashboard")}
+                                    className="mt-5 rounded-lg bg-indigo-600 px-5 py-2.5 text-sm font-medium text-white transition hover:bg-indigo-700"
+                                >
+                                    Analyze a Resume
+                                </button>
+                            </div>
+                        ) : (
+                            <>
+                                {/* desktop table */}
+                                {/* mobile cards */}
+                            </>
+                        )}
                         {/* Desktop table */}
                         <div className="hidden overflow-x-auto md:block">
                             <table className="w-full text-left">
@@ -173,6 +232,7 @@ export default function History() {
                                                 <div className="flex items-center gap-2">
                                                     <button
                                                         type="button"
+                                                        onClick={() => handleView(item.id)}
                                                         className="rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
                                                     >
                                                         View
@@ -180,8 +240,9 @@ export default function History() {
 
                                                     <button
                                                         type="button"
+                                                        onClick={() => handleDelete(item.id)}
                                                         className="rounded-lg p-2 text-slate-400 transition hover:bg-red-50 hover:text-red-600"
-                                                        aria-label="Delete analysis"
+                                                        aria-label={`Delete analysis for ${item.jobRole}`}
                                                     >
                                                         <Trash2 size={18} />
                                                     </button>
@@ -225,6 +286,7 @@ export default function History() {
                                     <div className="mt-4 flex gap-2">
                                         <button
                                             type="button"
+                                            onClick={() => handleView(item.id)}
                                             className="flex-1 rounded-lg border border-slate-300 px-3 py-2 text-sm font-medium text-slate-700 transition hover:bg-slate-100"
                                         >
                                             View Analysis
@@ -232,8 +294,9 @@ export default function History() {
 
                                         <button
                                             type="button"
+                                            onClick={() => handleDelete(item.id)}
                                             className="rounded-lg border border-slate-300 p-2 text-slate-400 transition hover:border-red-200 hover:bg-red-50 hover:text-red-600"
-                                            aria-label="Delete analysis"
+                                            aria-label={`Delete analysis for ${item.jobRole}`}
                                         >
                                             <Trash2 size={18} />
                                         </button>
