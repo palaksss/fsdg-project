@@ -46,62 +46,75 @@ export default function Dashboard() {
     };
 
     const handleAnalyze = async () => {
-    if (!resume) {
-        setError("Please upload your resume.");
-        return;
-    }
+        if (!resume) {
+            setError("Please upload your resume.");
+            return;
+        }
 
-    if (!jobDescription.trim()) {
-        setError("Please paste the job description.");
-        return;
-    }
+        if (!jobDescription.trim()) {
+            setError("Please paste the job description.");
+            return;
+        }
 
-    try {
-        setError("");
-        setIsAnalyzing(true);
-        setShowResults(false);
+        try {
+            setError("");
+            setIsAnalyzing(true);
+            setShowResults(false);
 
-        const formData = new FormData();
-        formData.append("resume", resume);
+            const formData = new FormData();
+            formData.append("resume", resume);
 
-        const uploadResponse = await fetch(
-            "http://localhost:5000/api/upload",
-            {
-                method: "POST",
-                body: formData
+            const uploadResponse = await fetch(
+                "http://localhost:5000/api/upload",
+                {
+                    method: "POST",
+                    body: formData,
+                }
+            );
+
+            const uploadData = await uploadResponse.json();
+
+            if (!uploadResponse.ok || !uploadData.success) {
+                throw new Error(
+                    uploadData.message || "Resume upload failed."
+                );
             }
-        );
 
-        const uploadData = await uploadResponse.json();
+            const analyzeResponse = await fetch(
+                "http://localhost:5000/api/analyze",
+                {
+                    method: "POST",
+                    headers: {
+                        "Content-Type": "application/json",
+                    },
+                    body: JSON.stringify({
+                        resume: uploadData.resume,
+                        jobDescription: jobDescription.trim(),
+                    }),
+                }
+            );
 
-        const analyzeResponse = await fetch(
-            "http://localhost:5000/api/analyze",
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify({
-                    resume: uploadData.resume,
-                    jobDescription
-                })
+            const result = await analyzeResponse.json();
+
+            console.log("Gemini Result:", result);
+
+            if (!analyzeResponse.ok) {
+                throw new Error(
+                    result.message || "Resume analysis failed."
+                );
             }
-        );
 
-        const result = await analyzeResponse.json();
+            setAnalysis(result);
+            setShowResults(true);
+        } catch (err) {
+            console.error(err);
 
-        setAnalysis(result);
-
-        setShowResults(true);
-    }
-    catch (err) {
-        console.log(err);
-
-        setError("Backend connection failed.");
-    }
-    finally {
-        setIsAnalyzing(false);
-    }
+            setError(
+                err.message || "Backend connection failed."
+            );
+        } finally {
+                setIsAnalyzing(false);
+        }
     };
     return (
         <>
@@ -375,7 +388,27 @@ export default function Dashboard() {
                                     </div>
                                 </div>
                             </div>
+                            {/* Required Skills */}
+                            <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                                <h3 className="text-lg font-semibold text-slate-900">
+                                    Required Skills
+                                </h3>
 
+                                <p className="mt-1 text-sm text-slate-500">
+                                    Skills and technologies identified from the job description.
+                                </p>
+
+                                <div className="mt-5 flex flex-wrap gap-2">
+                                    {analysis?.requiredSkills?.map((skill) => (
+                                        <span
+                                            key={skill}
+                                            className="rounded-full bg-blue-50 px-3 py-1.5 text-sm font-medium text-blue-700"
+                                        >
+                                            {skill}
+                                        </span>
+                                    ))}
+                                </div>
+                            </div>
                             {/* Suggestions */}
                             <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
                                 <div className="flex items-center gap-3">

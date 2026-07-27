@@ -5,8 +5,13 @@ const parseResume = require("../utils/resumeParser");
 const analyzeResumeWithGemini = require("../services/gemini");
 
 const uploadResume = async (req, res) => {
-
     try {
+        if (!req.file) {
+            return res.status(400).json({
+                success: false,
+                message: "Resume file is required",
+            });
+        }
 
         const dataBuffer = fs.readFileSync(req.file.path);
 
@@ -17,51 +22,53 @@ const uploadResume = async (req, res) => {
         res.json({
             success: true,
             filename: req.file.filename,
-            resume
+            resume,
         });
-
-    }
-    catch (err) {
-
+    } catch (err) {
         console.log(err);
 
         res.status(500).json({
             success: false,
-            message: "Error reading PDF"
+            message: "Error reading PDF",
         });
-
     }
-
 };
 
 const analyzeResume = async (req, res) => {
-
     try {
-
         const { resume, jobDescription } = req.body;
+
+        if (!resume) {
+            return res.status(400).json({
+                success: false,
+                message: "Parsed resume is required",
+            });
+        }
+
+        if (!jobDescription || !jobDescription.trim()) {
+            return res.status(400).json({
+                success: false,
+                message: "Job description is required",
+            });
+        }
 
         const result = await analyzeResumeWithGemini(
             resume,
-            jobDescription
+            jobDescription.trim()
         );
 
         res.json(result);
-
-    }
-    catch (err) {
-
+    } catch (err) {
         console.log(err);
 
         res.status(500).json({
             success: false,
-            message: "Gemini analysis failed"
+            message: "Gemini analysis failed",
         });
-
     }
-
 };
 
 module.exports = {
     uploadResume,
-    analyzeResume
+    analyzeResume,
 };
