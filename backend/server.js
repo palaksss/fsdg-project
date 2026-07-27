@@ -5,15 +5,27 @@ const multer = require("multer");
 const fs = require("fs");
 const cors = require("cors");
 
+const connectDatabase = require("./config/db");
+
 const {
     uploadResume,
-    analyzeResume
+    analyzeResume,
 } = require("./controllers/analyzeController");
+
+const {
+    getAnalyses,
+    getAnalysisById,
+    deleteAnalysis,
+} = require("./controllers/historyController");
 
 const app = express();
 
+connectDatabase();
+
 app.use(cors());
 app.use(express.json());
+
+
 
 const storage = multer.diskStorage({
     destination(req, file, cb) {
@@ -47,20 +59,52 @@ const upload = multer({
     },
 });
 
-app.get("/", (req, res) => {
-    res.send("Backend is running!");
-});
-
+// Upload resume
 app.post(
     "/api/upload",
     upload.single("resume"),
     uploadResume
 );
 
+// Analyze resume
 app.post(
     "/api/analyze",
     analyzeResume
 );
+
+// History routes
+app.get("/api/analyses", getAnalyses);
+
+app.get(
+    "/api/analyses/:id",
+    getAnalysisById
+);
+
+app.delete(
+    "/api/analyses/:id",
+    deleteAnalysis
+);
+
+app.use((error, req, res, next) => {
+    if (error instanceof multer.MulterError) {
+        return res.status(400).json({
+            success: false,
+            message:
+                error.code === "LIMIT_FILE_SIZE"
+                    ? "PDF must be smaller than 5 MB."
+                    : error.message,
+        });
+    }
+
+    if (error) {
+        return res.status(400).json({
+            success: false,
+            message: error.message || "Something went wrong.",
+        });
+    }
+
+    next();
+});
 
 const PORT = process.env.PORT || 5000;
 

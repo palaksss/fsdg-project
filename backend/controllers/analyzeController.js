@@ -3,6 +3,7 @@ const pdf = require("pdf-parse");
 
 const parseResume = require("../utils/resumeParser");
 const analyzeResumeWithGemini = require("../services/gemini");
+const Analysis = require("../models/Analysis");
 
 const uploadResume = async (req, res) => {
     try {
@@ -19,15 +20,25 @@ const uploadResume = async (req, res) => {
 
         const resume = parseResume(pdfData.text);
 
-        res.json({
+        // Remove the temporary uploaded PDF
+        if (fs.existsSync(req.file.path)) {
+            fs.unlinkSync(req.file.path);
+        }
+
+        return res.status(200).json({
             success: true,
-            filename: req.file.filename,
+            filename: req.file.originalname,
             resume,
         });
     } catch (err) {
-        console.log(err);
+        console.error("PDF upload error:", err);
 
-        res.status(500).json({
+        // Remove the file even if parsing fails
+        if (req.file?.path && fs.existsSync(req.file.path)) {
+            fs.unlinkSync(req.file.path);
+        }
+
+        return res.status(500).json({
             success: false,
             message: "Error reading PDF",
         });
@@ -36,19 +47,33 @@ const uploadResume = async (req, res) => {
 
 const analyzeResume = async (req, res) => {
     try {
-        const { resume, jobDescription } = req.body;
+        const {
+            resume,
+            resumeName,
+            jobDescription,
+            jobTitle,
+            company,
+            userEmail,
+        } = req.body;
 
         if (!resume) {
             return res.status(400).json({
                 success: false,
-                message: "Parsed resume is required",
+                message: "Parsed resume is required.",
             });
         }
 
-        if (!jobDescription || !jobDescription.trim()) {
+        if (!jobDescription?.trim()) {
             return res.status(400).json({
                 success: false,
-                message: "Job description is required",
+                message: "Job description is required.",
+            });
+        }
+
+        if (!userEmail?.trim()) {
+            return res.status(400).json({
+                success: false,
+                message: "User email is required.",
             });
         }
 
@@ -57,13 +82,36 @@ const analyzeResume = async (req, res) => {
             jobDescription.trim()
         );
 
-        res.json(result);
-    } catch (err) {
-        console.log(err);
+        if (
+            !result ||
+            typeof result.atsScore !== "number"
+        ) {
+            throw new Error("Invalid analysis response from Gemini.");
+        }
 
-        res.status(500).json({
+        const savedAnalysis = await Analysis.create({
+            resumeName: resumeName || "Resume.pdf",
+            jobTitle: jobTitle || "Not specified",
+            company: company || "Not specified",
+            jobDescription: jobDescription.trim(),
+            atsScore: result.atsScore,
+            matchedSkills: result.matchedSkills || [],
+            missingSkills: result.missingSkills || [],
+            requiredSkills: result.requiredSkills || [],
+            suggestions: result.suggestions || [],
+            userEmail: userEmail.trim().toLowerCase(),
+        });
+
+        return res.status(201).json({
+            success: true,
+            analysis: savedAnalysis,
+        });
+    } catch (error) {
+        console.error("Analysis error:", error);
+
+        return res.status(500).json({
             success: false,
-            message: "Gemini analysis failed",
+            message: error.message || "Resume analysis failed.",
         });
     }
 };

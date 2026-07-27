@@ -10,6 +10,7 @@ import {
 } from "lucide-react";
 import { useState } from "react";
 import Navbar from "../components/Navbar";
+import { useAuth } from "../context/AuthContext";
 
 export default function Dashboard() {
     const [resume, setResume] = useState(null);
@@ -18,6 +19,8 @@ export default function Dashboard() {
     const [showResults, setShowResults] = useState(false);
     const [error, setError] = useState("");
     const [analysis, setAnalysis] = useState(null);
+
+    const { user } = useAuth();
 
     const handleFileChange = (event) => {
         const selectedFile = event.target.files?.[0];
@@ -89,7 +92,11 @@ export default function Dashboard() {
                     },
                     body: JSON.stringify({
                         resume: uploadData.resume,
+                        resumeName: resume.name,
                         jobDescription: jobDescription.trim(),
+                        jobTitle: "Not specified",
+                        company: "Not specified",
+                        userEmail: user?.email,
                     }),
                 }
             );
@@ -98,13 +105,14 @@ export default function Dashboard() {
 
             console.log("Gemini Result:", result);
 
-            if (!analyzeResponse.ok) {
+            if (!analyzeResponse.ok || !result.success) {
                 throw new Error(
                     result.message || "Resume analysis failed."
                 );
             }
 
-            setAnalysis(result);
+            setAnalysis(result.analysis);
+
             setShowResults(true);
         } catch (err) {
             console.error(err);
