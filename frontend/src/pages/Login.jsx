@@ -10,10 +10,12 @@ export default function Login() {
         email: "",
         password: "",
     });
-    const { login } = useAuth();
 
     const [showPassword, setShowPassword] = useState(false);
     const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
+
+    const { login } = useAuth();
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -26,29 +28,32 @@ export default function Login() {
         setError("");
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (!formData.email.trim() || !formData.password) {
-            setError("Please enter your email and password.");
+        const email = formData.email.trim();
+        const password = formData.password;
+
+        if (!email || !password) {
+            setError("Email and password are required.");
             return;
         }
 
-        if (formData.password.length < 6) {
-            setError("Password must contain at least 6 characters.");
-            return;
+        try {
+            setError("");
+            setIsLoading(true);
+
+            await login({
+                email,
+                password,
+            });
+
+            navigate("/dashboard");
+        } catch (err) {
+            setError(err.message || "Login failed.");
+        } finally {
+            setIsLoading(false);
         }
-
-        login({
-            name: "Palak",
-            email: formData.email,
-        });
-
-        navigate("/dashboard");
-
-        // Temporary frontend behaviour.
-        // Replace this with the backend login request later.
-        
     };
 
     return (
@@ -120,6 +125,7 @@ export default function Login() {
                                 id="email"
                                 name="email"
                                 type="email"
+                                required
                                 value={formData.email}
                                 onChange={handleChange}
                                 placeholder="you@example.com"
@@ -156,6 +162,7 @@ export default function Login() {
                                     id="password"
                                     name="password"
                                     type={showPassword ? "text" : "password"}
+                                    required
                                     value={formData.password}
                                     onChange={handleChange}
                                     placeholder="Enter your password"
@@ -194,9 +201,10 @@ export default function Login() {
                         {/* Submit button */}
                         <button
                             type="submit"
-                            className="w-full rounded-lg bg-indigo-600 py-3 font-medium text-white transition hover:bg-indigo-700"
+                            disabled={isLoading}
+                            className="w-full rounded-lg bg-indigo-600 py-3 font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                            Sign In
+                            {isLoading ? "Signing In..." : "Sign In"}
                         </button>
                     </form>
 

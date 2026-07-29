@@ -18,6 +18,10 @@ const {
     deleteAnalysis,
 } = require("./controllers/historyController");
 
+const {
+    registerUser,
+    loginUser,
+} = require("./controllers/authController");
 const app = express();
 
 connectDatabase();
@@ -71,6 +75,11 @@ app.post(
     "/api/analyze",
     analyzeResume
 );
+
+// Authentication routes
+app.post("/api/auth/register", registerUser);
+
+app.post("/api/auth/login", loginUser);
 
 // History routes
 app.get("/api/analyses", getAnalyses);

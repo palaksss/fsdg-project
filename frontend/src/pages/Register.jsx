@@ -16,6 +16,7 @@ export default function Register() {
     const [showPassword, setShowPassword] = useState(false);
     const [showConfirmPassword, setShowConfirmPassword] = useState(false);
     const [error, setError] = useState("");
+    const [isLoading, setIsLoading] = useState(false);
 
     const handleChange = (event) => {
         const { name, value } = event.target;
@@ -28,39 +29,45 @@ export default function Register() {
         setError("");
     };
 
-    const handleSubmit = (event) => {
+    const handleSubmit = async (event) => {
         event.preventDefault();
 
-        if (
-            !formData.name.trim() ||
-            !formData.email.trim() ||
-            !formData.password ||
-            !formData.confirmPassword
-        ) {
+        const name = formData.name.trim();
+        const email = formData.email.trim();
+        const password = formData.password;
+        const confirmPassword = formData.confirmPassword;
+
+        if (!name || !email || !password || !confirmPassword) {
             setError("Please fill in all fields.");
             return;
         }
 
-        if (formData.password.length < 6) {
-            setError("Password must contain at least 6 characters.");
+        if (password.length < 6) {
+            setError("Password must be at least 6 characters.");
             return;
         }
 
-        if (formData.password !== formData.confirmPassword) {
+        if (password !== confirmPassword) {
             setError("Passwords do not match.");
             return;
         }
 
-        console.log("Registration data:", formData);
+        try {
+            setError("");
+            setIsLoading(true);
 
-        // Temporary frontend behaviour.
-        // Replace this with the backend registration request later.
-        register({
-            name: formData.name,
-            email: formData.email,
-        });
+            await register({
+                name,
+                email,
+                password,
+            });
 
-        navigate("/dashboard");
+            navigate("/dashboard");
+        } catch (err) {
+            setError(err.message || "Registration failed.");
+        } finally {
+            setIsLoading(false);
+        }
     };
 
     return (
@@ -130,6 +137,7 @@ export default function Register() {
                                 id="name"
                                 name="name"
                                 type="text"
+                                required
                                 value={formData.name}
                                 onChange={handleChange}
                                 placeholder="Enter your full name"
@@ -150,6 +158,7 @@ export default function Register() {
                                 id="email"
                                 name="email"
                                 type="email"
+                                required
                                 value={formData.email}
                                 onChange={handleChange}
                                 placeholder="you@example.com"
@@ -171,6 +180,7 @@ export default function Register() {
                                     id="password"
                                     name="password"
                                     type={showPassword ? "text" : "password"}
+                                    required
                                     value={formData.password}
                                     onChange={handleChange}
                                     placeholder="Create a password"
@@ -216,6 +226,7 @@ export default function Register() {
                                             ? "text"
                                             : "password"
                                     }
+                                    required
                                     value={formData.confirmPassword}
                                     onChange={handleChange}
                                     placeholder="Enter your password again"
@@ -254,9 +265,10 @@ export default function Register() {
 
                         <button
                             type="submit"
-                            className="w-full rounded-lg bg-indigo-600 py-3 font-medium text-white transition hover:bg-indigo-700"
+                            disabled={isLoading}
+                            className="w-full rounded-lg bg-indigo-600 py-3 font-medium text-white transition hover:bg-indigo-700 disabled:cursor-not-allowed disabled:opacity-60"
                         >
-                            Create Account
+                            {isLoading ? "Creating Account..." : "Create Account"}
                         </button>
                     </form>
 
