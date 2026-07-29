@@ -1,3 +1,4 @@
+import Icon from "../assets/icon.svg";
 import { MenuIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
@@ -65,7 +66,13 @@ export default function Navbar() {
             <Link
                 to="/"
                 onClick={() => setOpenMobileMenu(false)}
+                className="flex items-center gap-2"
             >
+                <img
+                    src={Icon}
+                    alt="AlignCV Logo"
+                    className="w-10 h-10"
+                />
                 <span className="bg-gradient-to-r from-indigo-600 to-pink-500 bg-clip-text text-2xl font-bold text-transparent">
                     AlignCV
                 </span>
