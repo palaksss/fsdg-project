@@ -4,8 +4,11 @@ import Dashboard from "./pages/Dashboard";
 import Register from "./pages/Register";
 import Login from "./pages/Login";
 import History from "./pages/History";
-import ProtectedRoute from "./components/ProtectedRoute";
 import AnalysisDetails from "./pages/AnalysisDetails";
+import ForgotPassword from "./pages/ForgotPassword";
+import ResetPassword from "./pages/ResetPassword";
+
+import ProtectedRoute from "./components/ProtectedRoute";
 import Navbar from "./components/Navbar";
 import Footer from "./components/Footer";
 
@@ -15,9 +18,31 @@ export default function App() {
             <Navbar />
 
             <Routes>
-                <Route path="/" element={<Home />} />
-                <Route path="/login" element={<Login />} />
-                <Route path="/register" element={<Register />} />
+                <Route
+                    path="/"
+                    element={<Home />}
+                />
+
+                <Route
+                    path="/login"
+                    element={<Login />}
+                />
+
+                <Route
+                    path="/register"
+                    element={<Register />}
+                />
+
+                <Route
+                    path="/forgot-password"
+                    element={<ForgotPassword />}
+                />
+
+                <Route
+                    path="/reset-password/:token"
+                    element={<ResetPassword />}
+                />
+
                 <Route
                     path="/dashboard"
                     element={
@@ -26,6 +51,7 @@ export default function App() {
                         </ProtectedRoute>
                     }
                 />
+
                 <Route
                     path="/history"
                     element={
@@ -34,6 +60,7 @@ export default function App() {
                         </ProtectedRoute>
                     }
                 />
+
                 <Route
                     path="/analysis/:id"
                     element={

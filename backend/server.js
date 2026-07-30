@@ -21,7 +21,10 @@ const {
 const {
     registerUser,
     loginUser,
+    forgotPassword,
+    resetPassword,
 } = require("./controllers/authController");
+
 const app = express();
 
 connectDatabase();
@@ -29,11 +32,8 @@ connectDatabase();
 app.use(cors());
 app.use(express.json());
 
-
-
 const storage = multer.diskStorage({
     destination(req, file, cb) {
-
         if (!fs.existsSync("uploads")) {
             fs.mkdirSync("uploads");
         }
@@ -46,7 +46,7 @@ const storage = multer.diskStorage({
             null,
             Date.now() + "-" + file.originalname
         );
-    }
+    },
 });
 
 const upload = multer({
@@ -63,26 +63,43 @@ const upload = multer({
     },
 });
 
-// Upload resume
 app.post(
     "/api/upload",
     upload.single("resume"),
     uploadResume
 );
 
-// Analyze resume
 app.post(
     "/api/analyze",
     analyzeResume
 );
 
-// Authentication routes
-app.post("/api/auth/register", registerUser);
+// Authentication Routes
+app.post(
+    "/api/auth/register",
+    registerUser
+);
 
-app.post("/api/auth/login", loginUser);
+app.post(
+    "/api/auth/login",
+    loginUser
+);
 
-// History routes
-app.get("/api/analyses", getAnalyses);
+app.post(
+    "/api/auth/forgot-password",
+    forgotPassword
+);
+
+app.post(
+    "/api/auth/reset-password/:token",
+    resetPassword
+);
+
+// History Routes
+app.get(
+    "/api/analyses",
+    getAnalyses
+);
 
 app.get(
     "/api/analyses/:id",
@@ -108,7 +125,8 @@ app.use((error, req, res, next) => {
     if (error) {
         return res.status(400).json({
             success: false,
-            message: error.message || "Something went wrong.",
+            message:
+                error.message || "Something went wrong.",
         });
     }
 

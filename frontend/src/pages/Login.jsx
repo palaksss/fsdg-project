@@ -144,17 +144,12 @@ export default function Login() {
                                     Password
                                 </label>
 
-                                <button
-                                    type="button"
+                               <Link
+                                    to="/forgot-password"
                                     className="text-sm font-medium text-indigo-600 hover:text-indigo-700"
-                                    onClick={() =>
-                                        alert(
-                                            "Forgot password functionality will be added later."
-                                        )
-                                    }
                                 >
                                     Forgot password?
-                                </button>
+                                </Link>
                             </div>
 
                             <div className="relative">
