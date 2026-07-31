@@ -37,7 +37,7 @@ export default function History() {
                 setError("");
 
                 const response = await fetch(
-                    `http://localhost:5000/api/analyses?userEmail=${encodeURIComponent(
+                    `${import.meta.env.VITE_API_URL}/api/analyses?userEmail=${encodeURIComponent(
                         user.email
                     )}`
                 );
@@ -99,7 +99,7 @@ export default function History() {
             setError("");
 
             const response = await fetch(
-                `http://localhost:5000/api/analyses/${id}?userEmail=${encodeURIComponent(
+                `${import.meta.env.VITE_API_URL}/api/analyses/${id}?userEmail=${encodeURIComponent(
                     user.email
                 )}`
             );
@@ -136,7 +136,7 @@ export default function History() {
             setError("");
 
             const response = await fetch(
-                `http://localhost:5000/api/analyses/${id}?userEmail=${encodeURIComponent(
+                `${import.meta.env.VITE_API_URL}/api/analyses/${id}?userEmail=${encodeURIComponent(
                     user.email
                 )}`,
                 {
