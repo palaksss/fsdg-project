@@ -130,7 +130,7 @@ export default function Dashboard() {
         <>
             <Navbar />
 
-            <main className="min-h-screen bg-slate-50 px-4 pb-16 pt-28 sm:px-6 lg:px-8">
+            <main className="min-h-screen bg-slate-50 px-4 pb-16 pt-24 sm:px-6 lg:px-8">
                 <div className="mx-auto max-w-7xl">
                     {/* Page heading */}
                     <section className="mb-8">

@@ -1,4 +1,4 @@
-import Icon from "../assets/icon.svg";
+import Icon from "../assets/icon-cropped.svg";
 import { MenuIcon, XIcon } from "lucide-react";
 import { useEffect, useState } from "react";
 import { useAuth } from "../context/AuthContext";
@@ -56,7 +56,7 @@ export default function Navbar() {
 
     return (
         <nav
-            className={`fixed top-0 z-50 flex w-full items-center justify-between border-b border-slate-200 px-6 py-4 md:px-16 lg:px-24 xl:px-32 ${
+            className={`fixed top-0 z-50 flex w-full items-center justify-between border-b border-slate-200 px-6 py-3 md:px-16 lg:px-24 xl:px-32 ${
                 openMobileMenu
                     ? "bg-white/80"
                     : "bg-white/40 backdrop-blur"
@@ -66,13 +66,14 @@ export default function Navbar() {
             <Link
                 to="/"
                 onClick={() => setOpenMobileMenu(false)}
-                className="flex shrink-0 items-center gap-3"
+                className="flex shrink-0 items-center gap-2"
             >
                 <img
                     src={Icon}
                     alt="AlignCV Logo"
-                    className="h-20 w-20 object-contain"
+                    className="h-10 w-10 object-contain"
                 />
+
                 <span className="bg-gradient-to-r from-indigo-600 to-pink-500 bg-clip-text text-2xl font-bold text-transparent">
                     AlignCV
                 </span>
