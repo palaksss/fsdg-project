@@ -19,6 +19,8 @@ export default function Dashboard() {
     const [showResults, setShowResults] = useState(false);
     const [error, setError] = useState("");
     const [analysis, setAnalysis] = useState(null);
+    const [jobTitle, setJobTitle] = useState("");
+    const [company, setCompany] = useState("");
 
     const { user } = useAuth();
 
@@ -94,8 +96,8 @@ export default function Dashboard() {
                         resume: uploadData.resume,
                         resumeName: resume.name,
                         jobDescription: jobDescription.trim(),
-                        jobTitle: "Not specified",
-                        company: "Not specified",
+                        jobTitle: jobTitle.trim() || "Not specified",
+                        company: company.trim() || "Not specified",
                         userEmail: user?.email,
                     }),
                 }
@@ -146,7 +148,7 @@ export default function Dashboard() {
                             and personalized suggestions.
                         </p>
                     </section>
-
+                    
                     {/* Input cards */}
                     <section className="grid gap-6 lg:grid-cols-2">
                         {/* Resume upload */}
@@ -222,45 +224,89 @@ export default function Dashboard() {
                                 </div>
                             )}
                         </div>
-
+                        
                         {/* Job description */}
-                        <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
-                            <div className="flex items-start justify-between gap-4">
-                                <div>
-                                    <div className="flex size-11 items-center justify-center rounded-xl bg-pink-100 text-pink-600">
-                                        <Search size={22} />
-                                    </div>
-
-                                    <h2 className="mt-4 text-xl font-semibold text-slate-900">
-                                        Job Description
-                                    </h2>
-
-                                    <p className="mt-1 text-sm text-slate-500">
-                                        Paste the complete job description you
-                                        want to compare.
-                                    </p>
+                    <div className="rounded-2xl border border-slate-200 bg-white p-6 shadow-sm">
+                        <div className="flex items-start justify-between gap-4">
+                            <div>
+                                <div className="flex size-11 items-center justify-center rounded-xl bg-pink-100 text-pink-600">
+                                    <Search size={22} />
                                 </div>
 
-                                <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500">
-                                    Required
-                                </span>
+                                <h2 className="mt-4 text-xl font-semibold text-slate-900">
+                                    Job Description
+                                </h2>
+
+                                <p className="mt-1 text-sm text-slate-500">
+                                    Enter the role details and paste the complete
+                                    job description you want to compare.
+                                </p>
                             </div>
 
-                            <textarea
-                                value={jobDescription}
-                                onChange={(event) => {
-                                    setJobDescription(event.target.value);
-                                    setError("");
-                                }}
-                                placeholder="Paste the job title, responsibilities, required skills, qualifications, and preferred experience here..."
-                                className="mt-6 min-h-64 w-full resize-none rounded-2xl border border-slate-300 bg-slate-50 p-4 text-sm leading-6 text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
-                            />
+                            <span className="rounded-full bg-slate-100 px-3 py-1 text-xs font-medium text-slate-500">
+                                Required
+                            </span>
+                        </div>
 
-                            <div className="mt-2 flex justify-between text-xs text-slate-400">
-                                <span>More detail gives better results</span>
-                                <span>{jobDescription.length} characters</span>
+                        <div className="mt-6 grid gap-4 sm:grid-cols-2">
+                            <div>
+                                <label
+                                    htmlFor="jobTitle"
+                                    className="mb-2 block text-sm font-medium text-slate-700"
+                                >
+                                    Job Title
+                                </label>
+
+                                <input
+                                    id="jobTitle"
+                                    type="text"
+                                    value={jobTitle}
+                                    onChange={(event) => {
+                                        setJobTitle(event.target.value);
+                                        setError("");
+                                    }}
+                                    placeholder="e.g. Software Engineer Intern"
+                                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+                                />
+                            </div>
+
+                            <div>
+                                <label
+                                    htmlFor="company"
+                                    className="mb-2 block text-sm font-medium text-slate-700"
+                                >
+                                    Company
+                                </label>
+
+                                <input
+                                    id="company"
+                                    type="text"
+                                    value={company}
+                                    onChange={(event) => {
+                                        setCompany(event.target.value);
+                                        setError("");
+                                    }}
+                                    placeholder="e.g. Microsoft"
+                                    className="w-full rounded-xl border border-slate-300 bg-slate-50 px-4 py-3 text-sm text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+                                />
                             </div>
                         </div>
+
+                        <textarea
+                            value={jobDescription}
+                            onChange={(event) => {
+                                setJobDescription(event.target.value);
+                                setError("");
+                            }}
+                            placeholder="Paste the responsibilities, required skills, qualifications, and preferred experience here..."
+                            className="mt-4 min-h-64 w-full resize-none rounded-2xl border border-slate-300 bg-slate-50 p-4 text-sm leading-6 text-slate-700 outline-none transition placeholder:text-slate-400 focus:border-indigo-500 focus:bg-white focus:ring-2 focus:ring-indigo-100"
+                        />
+
+                        <div className="mt-2 flex justify-between text-xs text-slate-400">
+                            <span>More detail gives better results</span>
+                            <span>{jobDescription.length} characters</span>
+                        </div>
+                    </div>
                     </section>
 
                     {error && (
@@ -268,7 +314,7 @@ export default function Dashboard() {
                             {error}
                         </p>
                     )}
-
+                    
                     {/* Analyze button */}
                     <div className="mt-7 flex justify-center">
                         <button
