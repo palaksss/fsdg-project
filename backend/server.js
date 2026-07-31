@@ -32,6 +32,13 @@ connectDatabase();
 app.use(cors());
 app.use(express.json());
 
+app.get("/", (req, res) => {
+    res.status(200).json({
+        success: true,
+        message: "AlignCV backend is running.",
+    });
+});
+
 const storage = multer.diskStorage({
     destination(req, file, cb) {
         if (!fs.existsSync("uploads")) {
