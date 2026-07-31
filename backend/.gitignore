@@ -3,3 +3,5 @@ uploads/
 sample/
 test.http
 .env
+.env.local
+.env.*.local
