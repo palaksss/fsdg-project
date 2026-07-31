@@ -66,12 +66,12 @@ export default function Navbar() {
             <Link
                 to="/"
                 onClick={() => setOpenMobileMenu(false)}
-                className="flex items-center gap-2"
+                className="flex shrink-0 items-center gap-3"
             >
                 <img
                     src={Icon}
                     alt="AlignCV Logo"
-                    className="w-10 h-10"
+                    className="h-24 w-auto"
                 />
                 <span className="bg-gradient-to-r from-indigo-600 to-pink-500 bg-clip-text text-2xl font-bold text-transparent">
                     AlignCV
@@ -79,7 +79,7 @@ export default function Navbar() {
             </Link>
 
             {/* Desktop navigation */}
-            <div className="hidden items-center font-medium md:flex md:gap-8 lg:gap-9 lg:pl-20">
+            <div className="hidden flex-1 items-center justify-center font-medium md:flex md:gap-8">
                 {navLinks.map((link) =>
                     link.name === "Features" ? (
                         <button
