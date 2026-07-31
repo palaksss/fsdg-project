@@ -71,7 +71,7 @@ export default function Navbar() {
                 <img
                     src={Icon}
                     alt="AlignCV Logo"
-                    className="h-24 w-auto"
+                    className="h-20 w-20 object-contain"
                 />
                 <span className="bg-gradient-to-r from-indigo-600 to-pink-500 bg-clip-text text-2xl font-bold text-transparent">
                     AlignCV
