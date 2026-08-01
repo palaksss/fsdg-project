@@ -28,34 +28,44 @@ export default function ForgotPassword() {
             setIsLoading(true);
 
             const response = await fetch(
-                fetch(`${import.meta.env.VITE_API_URL}/api/auth/forgot-password`),
+                `${import.meta.env.VITE_API_URL}/api/auth/forgot-password`,
                 {
                     method: "POST",
-
                     headers: {
                         "Content-Type": "application/json",
                     },
-
                     body: JSON.stringify({
                         email: normalizedEmail,
                     }),
                 }
             );
 
-            const data = await response.json();
+            const responseText = await response.text();
+
+            let data = {};
+
+            if (responseText) {
+                try {
+                    data = JSON.parse(responseText);
+                } catch {
+                    throw new Error(
+                        "The server returned an invalid response."
+                    );
+                }
+            }
 
             if (!response.ok || !data.success) {
                 throw new Error(
-                    data.message ||
-                        "Could not send reset email."
+                    data.message || "Could not send reset email."
                 );
             }
 
             setMessage(data.message);
         } catch (err) {
+            console.error("Forgot password error:", err);
+
             setError(
-                err.message ||
-                    "Could not send reset email."
+                err.message || "Could not send reset email."
             );
         } finally {
             setIsLoading(false);
