@@ -119,6 +119,8 @@ PORT=5000
 MONGODB_URI=
 JWT_SECRET=
 GEMINI_API_KEY=
+EMAIL_USER=
+EMAIL_APP_PASSWORD=
 FRONTEND_URL=http://localhost:5173
 ```
 
@@ -163,6 +165,14 @@ DELETE /api/analyses/:id
 - Secure password reset via hashed tokens
 - Password reset links expire after 15 minutes
 - Sensitive credentials stored in environment variables
+
+---
+
+## Notes
+
+- Password reset emails are powered by Resend.
+- On the free Resend plan using the default testing domain (`onboarding@resend.dev`), reset emails can only be delivered to the Resend account email.
+- To enable password reset for all users, configure a verified custom domain in Resend.
 
 ---
 
