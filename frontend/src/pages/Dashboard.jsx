@@ -70,7 +70,7 @@ export default function Dashboard() {
             formData.append("resume", resume);
 
             const uploadResponse = await fetch(
-                fetch(`${import.meta.env.VITE_API_URL}/api/upload`),
+                `${import.meta.env.VITE_API_URL}/api/upload`,
                 {
                     method: "POST",
                     body: formData,
@@ -86,7 +86,7 @@ export default function Dashboard() {
             }
 
             const analyzeResponse = await fetch(
-                fetch(`${import.meta.env.VITE_API_URL}/api/analyze`),
+                `${import.meta.env.VITE_API_URL}/api/analyze`,
                 {
                     method: "POST",
                     headers: {
