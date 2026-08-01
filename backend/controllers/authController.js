@@ -1,5 +1,5 @@
 const crypto = require("crypto");
-const createTransporter = require("../config/email");
+const createEmailClient = require("../config/email");
 const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
@@ -196,73 +196,104 @@ const forgotPassword = async (req, res) => {
             `${frontendUrl}/reset-password/${resetToken}`;
 
         try {
-            const transporter = createTransporter();
+            const resend = createEmailClient();
 
-            await transporter.sendMail({
-                from: `"AlignCV" <${process.env.EMAIL_USER}>`,
-                to: user.email,
-                subject: "Reset your AlignCV password",
+            const { data, error: resendError } =
+                await resend.emails.send({
+                    from:
+                        process.env.EMAIL_FROM ||
+                        "AlignCV <onboarding@resend.dev>",
 
-                text: `
-You requested a password reset for your AlignCV account.
+                    to: [user.email],
 
-Open this link to set a new password:
+                    subject: "Reset your AlignCV password",
 
-${resetUrl}
+                    text: `
+            You requested a password reset for your AlignCV account.
 
-This link expires in 15 minutes.
+            Open this link to set a new password:
 
-If you did not request this reset, you can ignore this email.
-                `,
+            ${resetUrl}
 
-                html: `
-<div style="max-width:560px;margin:0 auto;padding:32px;font-family:Arial,sans-serif;color:#1e293b;">
-<h1 style="color:#4f46e5;">AlignCV</h1>
+            This link expires in 15 minutes.
 
-<h2>Reset your password</h2>
+            If you did not request this reset, you can ignore this email.
+                    `,
 
-<p>We received a request to reset the password for your AlignCV account.</p>
+                    html: `
+            <div style="max-width:560px;margin:0 auto;padding:32px;font-family:Arial,sans-serif;color:#1e293b;">
+                <h1 style="color:#4f46e5;">AlignCV</h1>
 
-<p>Click the button below to choose a new password.</p>
+                <h2>Reset your password</h2>
 
-<a href="${resetUrl}" style="display:inline-block;margin:20px 0;padding:12px 22px;background:#4f46e5;color:white;text-decoration:none;border-radius:8px;font-weight:bold;">
-Reset Password
-</a>
+                <p>
+                    We received a request to reset the password for your
+                    AlignCV account.
+                </p>
 
-<p>This link expires in 15 minutes.</p>
+                <p>Click the button below to choose a new password.</p>
 
-<p>If you did not request this password reset, you can safely ignore this email.</p>
-</div>
-                `,
-            });
-        } catch (emailError) {
-            user.resetPasswordToken = null;
-            user.resetPasswordExpires = null;
+                <a
+                    href="${resetUrl}"
+                    style="
+                        display:inline-block;
+                        margin:20px 0;
+                        padding:12px 22px;
+                        background:#4f46e5;
+                        color:white;
+                        text-decoration:none;
+                        border-radius:8px;
+                        font-weight:bold;
+                    "
+                >
+                    Reset Password
+                </a>
 
-            await user.save();
+                <p>This link expires in 15 minutes.</p>
 
-            console.error(
-                "Reset email error:",
-                emailError
-            );
+                <p>
+                    If you did not request this password reset,
+                    you can safely ignore this email.
+                </p>
+            </div>
+                    `,
+                });
+
+            if (resendError) {
+                throw new Error(
+                    resendError.message || "Resend could not send the email."
+                );
+            }
+
+            } catch (emailError) {
+                user.resetPasswordToken = null;
+                user.resetPasswordExpires = null;
+
+                await user.save();
+
+                console.error(
+                    "Reset email error:",
+                    emailError
+                );
+
+                return res.status(500).json({
+                    success: false,
+                    message:
+                        emailError.message ||
+                        "Could not send the password reset email.",
+                });
+            }
+
+            return res.status(200).json(successResponse);
+        } catch (error) {
+            console.error("Forgot password error:", error);
 
             return res.status(500).json({
                 success: false,
                 message:
-                    "Could not send the password reset email.",
+                    "Could not process the password reset request.",
             });
         }
-
-        return res.status(200).json(successResponse);
-    } catch (error) {
-        console.error("Forgot password error:", error);
-
-        return res.status(500).json({
-            success: false,
-            message:
-                "Could not process the password reset request.",
-        });
-    }
 };
 
 const resetPassword = async (req, res) => {

@@ -15,6 +15,7 @@ export default function ForgotPassword() {
     const handleSubmit = async (event) => {
         event.preventDefault();
 
+
         const normalizedEmail = email.trim();
 
         if (!normalizedEmail) {
