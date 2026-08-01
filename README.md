@@ -1,111 +1,260 @@
-# SaaSly - React JS Modern SaaS App
+# AlignCV
 
-SaaSly is a clean and modern SaaS website template crafted for rapid product launches. It features modern UI, responsive layout design and conversion-driven sections that help businesses showcase features, engage users, and scale effortlessly - making it an ideal choice for startups seeking a polished, professional online presence.
-
-**Live Preview:**
-https://saasly.vercel.app
+AlignCV is an AI-powered ATS Resume Analyzer built using the MERN stack and Google Gemini AI.
+It compares a user's resume with a job description and generates an ATS compatibility report including an overall match score, missing skills, strengths, weaknesses, and personalized suggestions to improve the resume.
 
 ---
 
-## What’s Included
+## Live Demo
 
-This package contains:
+Frontend: [https://aligncv-kappa.vercel.app/](https://aligncv-kappa.vercel.app/)
 
-- React Version
-- Structured component architecture
-- Production-ready responsive layouts
-- License file
-
-React version follows best practices and is optimized for production deployment.
+Backend: [https://aligncv-backend.onrender.com/](https://aligncv-backend.onrender.com/)
 
 ---
 
-## Core Features
+## Features
 
-- Hero section
-- Feature showcase
-- Feedback analyzer
-- User management
-- Better invoicing
-- Testimonials
-- Pricing plans
-- Responsive layout
+- Secure User Authentication (JWT)
+- Forgot Password via Email
+- Password Reset using Secure Token
+- Resume Upload (PDF)
+- ATS Compatibility Score
+- Missing Skills Detection
+- Resume Strengths & Weaknesses
+- AI-powered Suggestions
+- Resume Analysis History
+- Delete Previous Analyses
+- Responsive UI
 
 ---
 
 ## Tech Stack
 
-
-### React Version
-
+### Frontend
 - React
+- Vite
 - Tailwind CSS
-- Modular component layout
 
+### Backend
+- Node.js
+- Express.js
+
+### Database
+- MongoDB Atlas
+
+### AI
+- Google Gemini API
+
+### Libraries Used
+- pdf-parse
+- multer
+- mongoose
+- bcryptjs
+- jsonwebtoken
+- nodemailer
 
 ---
 
-## Installation Guide
+## Project Workflow
 
+```
+Upload Resume (PDF)
+        │
+        ▼
+Extract Resume Text
+        │
+        ▼
+Paste Job Description
+        │
+        ▼
+Google Gemini Analysis
+        │
+        ▼
+ATS Score + Skill Analysis + Suggestions
+        │
+        ▼
+Save Analysis to MongoDB
+        │
+        ▼
+Display Results & History
+```
 
-### React
+---
 
-1. Navigate to the `/reactjs` directory.
-2. Install dependencies:
+## Project Architecture
 
-   npm install
+```
+React (Vite)
+      │
+      ▼
+Express.js API
+      │
+ ┌────┴─────┐
+ ▼          ▼
+Gemini AI  MongoDB Atlas
+```
 
-3. Run development server:
+---
 
-   npm run dev
+## Installation
 
+### Clone Repository
+```bash
+git clone https://github.com/palaksss/fsdg-project.git
+cd fsdg-project
+```
+
+---
+
+### Backend
+```bash
+cd backend
+npm install
+```
+
+Create a `.env` file inside the backend folder.
+```
+PORT=5000
+MONGODB_URI=
+JWT_SECRET=
+GEMINI_API_KEY=
+FRONTEND_URL=http://localhost:5173
+```
+
+Start backend
+```bash
+npm start
+```
+
+---
+
+### Frontend
+```bash
+cd frontend
+npm install
+npm run dev
+```
+
+The frontend will start on Vite's default development server, while the backend runs on port 5000.
+
+---
+
+## API Endpoints
+
+```
+POST   /api/auth/register
+POST   /api/auth/login
+POST   /api/auth/forgot-password
+POST   /api/auth/reset-password/:token
+POST   /api/upload
+POST   /api/analyze
+GET    /api/analyses
+GET    /api/analyses/:id
+DELETE /api/analyses/:id
+```
+
+---
+
+## Security
+
+- Passwords encrypted using bcrypt
+- JWT Authentication
+- Secure password reset via hashed tokens
+- Password reset links expire after 15 minutes
+- Sensitive credentials stored in environment variables
+
+---
+
+## Deployment
+
+Frontend: Vercel
+
+Backend: Render
+
+Database: MongoDB Atlas
+
+---
+
+## Folder Structure
+
+```
+fsdg-project/
+│
+├── backend/
+│   ├── config/
+│   │   ├── db.js
+│   │   └── email.js
+│   ├── controllers/
+│   ├── models/
+│   ├── services/
+│   ├── utils/
+│   ├── server.js
+│   ├── package.json
+│   └── package-lock.json
+│
+├── frontend/
+│   ├── public/
+│   ├── src/
+│   │   ├── assets/
+│   │   ├── components/
+│   │   ├── context/
+│   │   ├── data/
+│   │   ├── pages/
+│   │   └── main.jsx
+│   ├── index.html
+│   ├── package.json
+│   ├── vercel.json
+│   └── vite.config.js
+│
+└── README.md
+```
+
+---
+
+## Screenshots
+
+- Home Page
+- Login Page
+- Register Page
+- Dashboard
+- Resume Upload
+- Resume Analysis
+- Analysis History
+- Forgot Password
+- Password Reset
+
+---
+
+## Future Improvements
+
+- DOCX Resume Support
+- AI Cover Letter Generator
+- Resume Builder
+- Export Analysis as PDF
+- Resume Version Comparison
+
+---
+
+## Acknowledgements
+
+The frontend of this project was initially based on the **SaaSly React Template** by **PrebuiltUI**.
+
+Template: [https://prebuiltui.com/](https://prebuiltui.com/)
+
+The original template served as the starting point for the user interface and was extensively customised for this project. Custom pages, backend integration, AI-powered ATS analysis using Google Gemini, MongoDB integration, resume parsing, and other application-specific functionality were developed as part of AlignCV.
+
+---
+
+## Contributors
+
+- [Shreyashi](https://github.com/Shreyashi-Shreyashi)
+- [Palak](https://github.com/palaksss)
 
 ---
 
 ## License
 
-This template is licensed for single-project commercial use.
+This project was developed for educational purposes as part of a Full Stack + Generative AI Internship.
 
-Your purchase allows you to use SaaSly in one end product
-intended for one business or client.
-
-You may NOT:
-
-- Resell or redistribute the source files
-- Upload to public repositories
-- Share with other developers or organizations
-- Use to create competing template products
-
-For agency usage, multi-project rights or white-label permissions,
-please contact:
-
-contact@prebuiltui.com
-
-See LICENSE.txt for full legal terms.
-
----
-## Support
-
-Support includes:
-
-- Installation guidance
-- Technical clarification
-- Minor issue resolution
-
-For assistance, contact:
-
-contact@prebuiltui.com
-
-Please include:
-
-- Template name
-- Version used (Next.js / React / HTML)
-- Node version (if applicable)
-- Clear description of the issue
-
----
-
-## © Copyright
-
-SaaSly © 2026 PrebuiltUI  
-All rights reserved.
+The frontend is based on the SaaSly React Template by PrebuiltUI. The original template remains subject to its own licence terms; see `LICENSE.txt` for details. The application-specific code (backend, AI integration, database integration, resume analysis logic, and other custom features) was developed by the project contributors.
